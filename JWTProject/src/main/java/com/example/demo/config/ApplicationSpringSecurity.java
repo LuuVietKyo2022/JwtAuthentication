@@ -16,8 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.example.demo.entites.UserRepository;
-
+import com.example.demo.Repositories.UserRepository;
 import com.example.demo.jwt.JwtTokenFilter;
 @EnableWebSecurity
 public class ApplicationSpringSecurity extends WebSecurityConfigurerAdapter {
@@ -46,7 +45,7 @@ public class ApplicationSpringSecurity extends WebSecurityConfigurerAdapter {
 			response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
 			ex.getMessage());
 		});
-		http.authorizeRequests().antMatchers("/auth/login").permitAll()
+		http.authorizeRequests().antMatchers("/auth/**").permitAll()
 		.anyRequest().authenticated();
 		//http.addFilterBefore(jwtTokenFilter,UsernamePasswordAuthenticationToken.class);
 		http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);

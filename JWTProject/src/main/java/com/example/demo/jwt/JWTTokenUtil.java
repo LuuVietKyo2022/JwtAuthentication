@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.example.demo.entites.User;
+import com.example.demo.entites.UserDetailsImpl;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -20,14 +21,14 @@ import io.jsonwebtoken.UnsupportedJwtException;
 @Component
 public class JWTTokenUtil {
 	private static final org.jboss.logging.Logger LOGGER = LoggerFactory.logger(JWTTokenUtil.class);
-	private static final long EXPIRE_DURATION = 10 * 60 *1000;
+	private static final long EXPIRE_DURATION = 2 * 60 *1000;
 	
 	@Value("${app.jwt.secret}")
 	private String secretKey;
 	
-	public String generateAccessToken(User user) {
+	public String generateAccessToken(UserDetailsImpl userDetails) {
 		return Jwts.builder()
-				.setSubject(user.getId()+","+user.getEmail())
+				.setSubject(userDetails.getUsername())
 				.setIssuer("CodeJava")
 				.setIssuedAt(new Date())
 				.setExpiration(new Date(System.currentTimeMillis()+ EXPIRE_DURATION))
@@ -59,5 +60,8 @@ public class JWTTokenUtil {
 				.setSigningKey(secretKey)
 				.parseClaimsJws(token)
 				.getBody();
+	}
+	public String getUserNameFromJwtToken(String token) {
+		return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
 	}
 }
